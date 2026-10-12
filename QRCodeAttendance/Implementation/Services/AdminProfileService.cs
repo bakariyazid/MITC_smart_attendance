@@ -48,7 +48,8 @@ namespace QRCodeAttendance.Implementation.Services
             admin.PhoneNumber = request.PhoneNumber?.Trim() ?? string.Empty;
             admin.Address = request.Address?.Trim() ?? string.Empty;
             admin.Gender = request.Gender;
-            admin.DateOfBirth = request.DateOfBirth;
+           // admin.DateOfBirth = request.DateOfBirth;
+            admin.DateOfBirth = DateTime.SpecifyKind(request.DateOfBirth.Date, DateTimeKind.Utc);
             admin.UpdatedDate = DateTime.UtcNow;
             _userRepository.Update(admin);
 
