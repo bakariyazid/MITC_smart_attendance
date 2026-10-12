@@ -158,6 +158,9 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.ExecuteSqlRaw(
          "ALTER TABLE IF EXISTS \"Invitations\" ADD COLUMN IF NOT EXISTS \"VerificationOtpHash\" text NULL;"
      );
+
+    dbContext.Database.ExecuteSqlRaw(
+   "ALTER TABLE \"Invitations\" ALTER COLUMN \"InvitationCodeHash\" DROP NOT NULL;");
 }
 
 
