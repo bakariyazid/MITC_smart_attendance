@@ -5,6 +5,7 @@ using QRCodeAttendance.Models.DTOs.Attendance;
 using QRCodeAttendance.Models.DTOs.Session;
 using QRCodeAttendance.Models.Entities;
 using QRCodeAttendance.Models.Enums;
+using QRCodeAttendance.Implementation.Services.Helpers;
 
 namespace QRCodeAttendance.Implementation.Services
 {
@@ -55,14 +56,21 @@ namespace QRCodeAttendance.Implementation.Services
                 CourseCode = request.CourseCode,
                 Level = request.Level,
                 Department = request.Department,
-                SessionStartTime = request.SessionStartTime.ToUniversalTime(),
-                SessionEndTime = request.SessionEndTime.ToUniversalTime(),
+               // SessionStartTime = request.SessionStartTime.ToUniversalTime(),
+               // SessionEndTime = request.SessionEndTime.ToUniversalTime(),
                 IsActive = true,
                 InstructorId = instructor.Id,
+               // QRCodeToken = string.Empty,
+                //QRCodeExpiry = request.QRCodeExpiry.ToUniversalTime(),
+                //CreatedDate = DateTime.UtcNow.ToUniversalTime(),
+                //UpdatedDate = DateTime.UtcNow.ToUniversalTime()
+
+                SessionStartTime = TimeHelper.ToUtcFromApp(request.SessionStartTime),
+                SessionEndTime = TimeHelper.ToUtcFromApp(request.SessionEndTime),
                 QRCodeToken = string.Empty,
-                QRCodeExpiry = request.QRCodeExpiry.ToUniversalTime(),
-                CreatedDate = DateTime.UtcNow.ToUniversalTime(),
-                UpdatedDate = DateTime.UtcNow.ToUniversalTime()
+                QRCodeExpiry = TimeHelper.ToUtcFromApp(request.QRCodeExpiry),
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
             };
 
             await _sessionRepository.Add(session);
@@ -169,7 +177,8 @@ namespace QRCodeAttendance.Implementation.Services
                 return new BaseResponse<SessionDto>
                 {
                     Status = false,
-                    Message = $"Please wait for the second scan time. The second scan opens at {secondScanStart.ToLocalTime():hh:mm tt}.",
+                    //Message = $"Please wait for the second scan time. The second scan opens at {secondScanStart.ToLocalTime():hh:mm tt}.",
+                    Message = $"Please wait for the second scan time. The second scan opens at {TimeHelper.ToAppLocal(secondScanStart):hh:mm tt}.",
                     Data = MapSessionToDto(session)
                 };
             }
@@ -485,9 +494,12 @@ namespace QRCodeAttendance.Implementation.Services
             session.CourseCode = request.CourseCode;
             session.Level = request.Level;
             session.Department = request.Department;
-            session.SessionStartTime = request.SessionStartTime.ToUniversalTime();
-            session.SessionEndTime = request.SessionEndTime.ToUniversalTime();
-            session.UpdatedDate = DateTime.UtcNow.ToUniversalTime();
+            // session.SessionStartTime = request.SessionStartTime.ToUniversalTime();
+            // session.SessionEndTime = request.SessionEndTime.ToUniversalTime();
+            // session.UpdatedDate = DateTime.UtcNow.ToUniversalTime();
+            session.SessionStartTime = TimeHelper.ToUtcFromApp(request.SessionStartTime);
+            session.SessionEndTime = TimeHelper.ToUtcFromApp(request.SessionEndTime);
+            session.UpdatedDate = DateTime.UtcNow;
 
             _sessionRepository.Update(session);
             await _unitOfWork.SaveChangesAsync();

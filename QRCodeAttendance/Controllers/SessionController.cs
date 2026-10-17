@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using QRCodeAttendance.Interface.Services;
 using QRCodeAttendance.Models.DTOs.Session;
 using QRCodeAttendance.Models.Entities;
+using QRCodeAttendance.Implementation.Services.Helpers;
 
 namespace QRCodeAttendance.Controllers
 {
@@ -152,8 +153,10 @@ namespace QRCodeAttendance.Controllers
                     CourseCode = response.Data.CourseCode,
                     Level = response.Data.Level,
                     Department = response.Data.Department,
-                    SessionStartTime = response.Data.SessionStartTime.ToLocalTime(),
-                    SessionEndTime = response.Data.SessionEndTime.ToLocalTime()
+                    //SessionStartTime = response.Data.SessionStartTime.ToLocalTime(),
+                    //SessionEndTime = response.Data.SessionEndTime.ToLocalTime()
+                    SessionStartTime = TimeHelper.ToAppLocal(response.Data.SessionStartTime),
+                    SessionEndTime = TimeHelper.ToAppLocal(response.Data.SessionEndTime)
                 };
 
                 ViewBag.SessionId = sessionId;
@@ -249,7 +252,8 @@ namespace QRCodeAttendance.Controllers
                         studentName = latest.StudentName,
                         courseName = latest.CourseName,
                         courseCode = latest.CourseCode,
-                        scanTime = latest.ScanTime.ToLocalTime().ToString("hh:mm tt")
+                        //scanTime = latest.ScanTime.ToLocalTime().ToString("hh:mm tt")
+                        scanTime = TimeHelper.ToAppLocal(latest.ScanTime).ToString("hh:mm tt")
                     }
                 });
             }
